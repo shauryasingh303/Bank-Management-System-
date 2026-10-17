@@ -1,0 +1,131 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+class BankAccount {
+private:
+    string name;
+    int accountNumber;
+    double balance;
+
+public:
+    BankAccount(string n, int accNo, double initialBalance) {
+        name = n;
+        accountNumber = accNo;
+        balance = initialBalance;
+    }
+
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            cout << "Deposit successful!\n";
+        } else {
+            cout << "Invalid amount!\n";
+        }
+    }
+
+    void withdraw(double amount) {
+        if (amount <= 0) {
+            cout << "Invalid amount!\n";
+        } else if (amount > balance) {
+            cout << "Insufficient balance!\n";
+        } else {
+            balance -= amount;
+            cout << "Withdrawal successful!\n";
+        }
+    }
+
+    void checkBalance() {
+        cout << "Current Balance: Rs. " << balance << '\n';
+    }
+
+    void displayDetails() {
+        cout << "\nAccount Holder: " << name << '\n';
+        cout << "Account Number: " << accountNumber << '\n';
+        checkBalance();
+    }
+
+    void saveToFile() {
+        ofstream file("bank_records.txt", ios::app);
+
+        if (file.is_open()) {
+            file << accountNumber << ","
+                 << name << ","
+                 << balance << '\n';
+            file.close();
+        }
+    }
+};
+
+int main() {
+    string name;
+    int accountNumber;
+    double initialBalance;
+
+    cout << "===== BANK MANAGEMENT SYSTEM =====\n";
+
+    cout << "Enter account holder name: ";
+    getline(cin, name);
+
+    cout << "Enter account number: ";
+    cin >> accountNumber;
+
+    cout << "Enter initial deposit: Rs. ";
+    cin >> initialBalance;
+
+    if (initialBalance < 0) {
+        cout << "Initial deposit cannot be negative!\n";
+        return 0;
+    }
+
+    BankAccount account(name, accountNumber, initialBalance);
+
+    int choice;
+    double amount;
+
+    do {
+        cout << "\n1. Deposit Money\n";
+        cout << "2. Withdraw Money\n";
+        cout << "3. Check Balance\n";
+        cout << "4. Display Account Details\n";
+        cout << "5. Save and Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter deposit amount: Rs. ";
+                cin >> amount;
+                account.deposit(amount);
+                break;
+
+            case 2:
+                cout << "Enter withdrawal amount: Rs. ";
+                cin >> amount;
+                account.withdraw(amount);
+                break;
+
+            case 3:
+                account.checkBalance();
+                break;
+
+            case 4:
+                account.displayDetails();
+                break;
+
+            case 5:
+                account.saveToFile();
+                cout << "Account details saved!\n";
+                cout << "Thank you for using our bank.\n";
+                break;
+
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
+    
